@@ -4,6 +4,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FlashMessagesService } from 'angular2-flash-messages';
 import { Client } from '../../models/Client';
 import { FlashMessagesModule } from 'angular2-flash-messages/module/module';
+import { SettingsService } from '../../services/settings.service';
+import { Settings } from '@firebase/firestore-types';
 
 @Component({
   selector: 'app-edit-client',
@@ -20,13 +22,14 @@ export class EditClientComponent implements OnInit {
     phone: '',
     balance: 0,
   };
-  disableBalanceOnEdit: boolean = true;
+  disableBalanceOnEdit: boolean;
 
   constructor(
     private clientService: ClientService,
     private router: Router,
     private route: ActivatedRoute,
-    private flashMessage: FlashMessagesService
+    private flashMessage: FlashMessagesService,
+    private settingsService: SettingsService
   ) { }
 
   ngOnInit() {
@@ -35,6 +38,7 @@ export class EditClientComponent implements OnInit {
     // Get client
     this.clientService.getClient(this.id).subscribe(
       client => this.client = client);
+    this.disableBalanceOnEdit = this.settingsService.getSettings().disableBalanceOnEdit;
   }
 
   onSubmit({value, valid}: {value: Client, valid: boolean}) {
